@@ -20,10 +20,7 @@ def sendPost(post):
     link = post.link
     description = post.description.split('\n')[1]
 
-    html_msg = "<a href='" + link + "'>" + "📃 " + "</a> " + \
-               title + "\n" + \
-               "\n" + \
-               description
+    html_msg = f"<a href='{link}'>📃 </a>{title}\n\n{description}"
 
     button_link = types.InlineKeyboardMarkup()
     url_button = types.InlineKeyboardButton("Подробнее", link)
