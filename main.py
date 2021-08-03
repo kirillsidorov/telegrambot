@@ -1,16 +1,29 @@
 import telebot
+import feedparser
+import time
+import config
+import ssl
+import requests
 
-token = '1942763178:AAFHWyxULQTjz_p0oSPAJs5kudwOKSy_rAE'
+ssl._create_default_https_context = ssl._create_unverified_context
+bot = telebot.TeleBot(config.TOKEN)
 
-bot = telebot.TeleBot(token)
 
-@bot.message_handler(commands=['start', 'help'])
+def post():
+    news_feed = feedparser.parse(config.htmlurlarticles)
+    for entry in news_feed.entries:
+        title = entry.title
+        link = entry.link
+        description = entry.description.split('\n')[1]
 
-def send_welcome(message):
-	bot.reply_to(message, "Howdy, how are you doing?")
+        html_msg = "<a href='" + link + "'>" + "📃 " + "</a> " + \
+                   title + "\n" + \
+                   "\n" + \
+                   description
 
-@bot.message_handler(func=lambda m: True)
-def echo_all(message):
-	bot.reply_to(message, message.text)
+        bot.send_message(config.channel, html_msg, parse_mode='html')
 
-bot.polling()
+        time.sleep(int(15))
+
+
+post()
