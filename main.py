@@ -5,14 +5,20 @@ import config
 import ssl
 import requests
 from telebot import types
+from datetime import datetime
+from time import mktime
+
 
 ssl._create_default_https_context = ssl._create_unverified_context
 bot = telebot.TeleBot(config.TOKEN)
 
 def main():
     posts = getPosts()
+    currentDay = datetime.today().day
     for post in posts:
-        sendPost(post)
+        dt = datetime.fromtimestamp(mktime(post.published_parsed))
+        if currentDay == dt.day:
+            sendPost(post)
         time.sleep(15)
 
 def sendPost(post):
